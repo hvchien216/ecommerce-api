@@ -19,7 +19,7 @@ async function bootstrap() {
   //   }),
   // );
   // app.use(compression());
-  app.use(morgan('dev'));
+  app.use(morgan('combined'));
   app.enableVersioning();
 
   await app.listen(configService.appConfig.port);

@@ -1,4 +1,4 @@
-import { Constructor } from 'src/common/type';
+import { Constructor } from '../common/type';
 import type { AbstractEntity } from '../common/abstract.entity';
 import type { AbstractDto } from '../common/dto/abstract.dto';
 

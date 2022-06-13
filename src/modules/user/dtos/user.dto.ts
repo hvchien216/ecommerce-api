@@ -1,3 +1,4 @@
+import { GenderType } from '@/constants/gener-type';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { AbstractDto } from '../../../common/dto/abstract.dto';
@@ -14,11 +15,20 @@ export class UserDto extends AbstractDto {
   @ApiProperty()
   username: string;
 
-  @ApiPropertyOptional()
-  password?: string;
+  @ApiProperty()
+  phone: string;
 
   @ApiPropertyOptional({ enum: RoleType })
   role: RoleType;
+
+  @ApiProperty()
+  address: string;
+
+  @ApiProperty()
+  avatar: string;
+
+  @ApiProperty({ enum: RoleType })
+  gender: GenderType;
 
   @ApiPropertyOptional()
   isActive?: boolean;
@@ -34,8 +44,10 @@ export class UserDto extends AbstractDto {
 
     this.name = user.name;
     this.username = user.username;
-    this.password = user.password;
     this.role = user.role;
+    this.phone = user.phone;
+    this.address = user.address;
+    this.avatar = user.avatar;
 
     this.isActive = options?.isActive;
   }

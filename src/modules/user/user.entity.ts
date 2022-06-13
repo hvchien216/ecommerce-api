@@ -1,19 +1,28 @@
-import { AbstractEntity, IAbstractEntity } from 'src/common/abstract.entity';
-import { RoleType } from 'src/constants';
-import { UseDto } from 'src/decorators';
+import { AbstractEntity, IAbstractEntity } from '../../common/abstract.entity';
 import { Column, Entity } from 'typeorm';
 import { UserDto, UserDtoOptions } from './dtos/user.dto';
+import { RoleType } from '../../constants';
+import { UseDto } from '../../decorators';
+import { GenderType } from '@/constants/gener-type';
 
 export interface IUserEntity extends IAbstractEntity<UserDto> {
-  username: string;
+  username?: string;
 
-  password: string;
+  password?: string;
 
   role: RoleType;
 
-  name: string;
+  name?: string;
 
-  isActive: boolean;
+  phone?: string;
+
+  gender?: GenderType;
+
+  avatar?: string;
+
+  address?: string;
+
+  isActive?: boolean;
 }
 
 @Entity({ name: 'users' })
@@ -34,6 +43,18 @@ export class UserEntity
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ type: 'enum', enum: GenderType, default: GenderType.MALE })
+  gender: GenderType;
+
+  @Column({ nullable: true })
+  avatar: string;
+
   @Column()
-  isActive: boolean;
+  address: string;
+
+  // @Column()
+  // isActive: boolean;
 }

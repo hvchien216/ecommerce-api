@@ -10,6 +10,12 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -f ormconfig.ts",
+    "migration:create": "yarn run typeorm -- migration:create -n",
+    "migration:generate": "yarn run typeorm -- migration:generate -n",
+    "migration:run": "yarn run typeorm migration:run",
+    "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert",
+    "drop:schema": "yarn typeorm schema:drop",
     "start": "nest start",
     "start:dev": "NEST_DEBUG=true nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -41,7 +47,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.6"
+    "typeorm": "0.2.45"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

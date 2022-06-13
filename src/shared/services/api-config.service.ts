@@ -87,9 +87,9 @@ export class ApiConfigService {
     return {
       entities,
       migrations,
-      // keepConnectionAlive: !this.isTest,
+      // keepConnectionAlive: !this.isTesst,
       dropSchema: this.isTest,
-      synchronize: true,
+      // synchronize: true,
       type: 'postgres',
       name: 'default',
       host: this.getString('DB_HOST'),
@@ -98,7 +98,7 @@ export class ApiConfigService {
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_DATABASE'),
       subscribers: [UserSubscriber],
-      migrationsRun: true,
+      // migrationsRun: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
     };
   }
