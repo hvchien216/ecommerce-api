@@ -1,9 +1,11 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { AppModule } from './app.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { SharedModule } from './shared/shared.module';
+import { SwaggerConfig } from './swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +23,12 @@ async function bootstrap() {
   // app.use(compression());
   app.use(morgan('combined'));
   app.enableVersioning();
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  if (configService.appConfig.enableDocumentation) {
+    SwaggerConfig(app, configService.appConfig.apiVersion);
+  }
 
   await app.listen(configService.appConfig.port);
   console.info(`server running on ${await app.getUrl()}`);

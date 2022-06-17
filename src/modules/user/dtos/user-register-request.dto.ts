@@ -5,12 +5,16 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsString,
+  Matches,
   MinLength,
 } from 'class-validator';
 
 import { Trim } from '../../../decorators/transform.decorators';
+import { UserProfileDto } from './user-profile.dto';
 
-export class UserRegisterDto {
+// const passwordRegex = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+
+export class CreateUserRequestDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -23,21 +27,12 @@ export class UserRegisterDto {
   @Trim()
   readonly username: string;
 
-  // @ApiProperty()
-  // @IsString()
-  // @IsEmail()
-  // @IsNotEmpty()
-  // @Trim()
-  // readonly email: string;
-
   @ApiProperty({ minLength: 6 })
+  // @Matches(passwordRegex, { message: 'Password too weak' })
   @IsString()
   @MinLength(6)
   readonly password: string;
 
-  // @ApiProperty()
-  // @Column()
-  // @IsPhoneNumber()
-  // @IsOptional()
-  // phone: string;
+  @ApiProperty()
+  readonly profile: UserProfileDto;
 }

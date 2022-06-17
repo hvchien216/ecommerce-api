@@ -1,20 +1,24 @@
+import { RoleType } from '@/constants/role-type';
+import { TokenType } from '@/constants/token-type';
+import { UserEntity } from '@/modules/user/user.entity';
+import { UserService } from '@/modules/user/user.service';
+import { ApiConfigService } from '@/shared/services/api-config.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { RoleType, TokenType } from 'src/constants';
-import { UserEntity } from 'src/modules/user/user.entity';
-import { UserService } from 'src/modules/user/user.service';
-import { ApiConfigService } from 'src/shared/services/api-config.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtRefreshTokenStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-refresh',
+) {
   constructor(
-    configService: ApiConfigService,
     private userService: UserService,
+    apiConfigService: ApiConfigService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.authConfig.publicKey,
+      jwtFromRequest: ExtractJwt.fromBodyField('refreshToken'),
+      secretOrKey: apiConfigService.authConfig.publicKey,
     });
   }
 
@@ -23,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     role: RoleType;
     type: TokenType;
   }): Promise<UserEntity> {
-    if (args.type !== TokenType.ACCESS_TOKEN) {
+    if (args.type !== TokenType.REFRESH_TOKEN) {
       throw new UnauthorizedException();
     }
 
@@ -32,7 +36,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         id: args.userId as any,
         role: args.role,
       },
-      relations: ['profile'],
     });
 
     if (!user) {

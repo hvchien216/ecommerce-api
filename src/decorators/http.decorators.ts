@@ -1,4 +1,4 @@
-import type { PipeTransform } from '@nestjs/common';
+import { PipeTransform } from '@nestjs/common';
 import {
   applyDecorators,
   Param,
@@ -11,8 +11,8 @@ import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 
 import { ROLES_KEY, RoleType } from '../constants';
-// import { AuthUserInterceptor } from '../interceptors/auth-user-interceptor.service';
 import { PublicRoute } from './public-route.decorator';
+import { ApiBearerAuth, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 export function Auth(
   roles: RoleType[] = [],
@@ -23,9 +23,8 @@ export function Auth(
   return applyDecorators(
     SetMetadata(ROLES_KEY, roles),
     UseGuards(AuthGuard({ public: isPublicRoute }), RolesGuard),
-    // ApiBearerAuth(),
-    // UseInterceptors(AuthUserInterceptor),
-    // ApiUnauthorizedResponse({ description: 'Unauthorized' }),
+    ApiBearerAuth(),
+    ApiUnauthorizedResponse({ description: 'Unauthorized' }),
     PublicRoute(isPublicRoute),
   );
 }

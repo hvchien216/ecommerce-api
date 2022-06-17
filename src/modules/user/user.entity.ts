@@ -1,11 +1,9 @@
 import { AbstractEntity, IAbstractEntity } from '../../common/abstract.entity';
-import { Column, Entity } from 'typeorm';
-import { UserDto, UserDtoOptions } from './dtos/user.dto';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { RoleType } from '../../constants';
-import { UseDto } from '../../decorators';
-import { GenderType } from '@/constants/gener-type';
+import { ProfileEntity } from '../profile/profile.entity';
 
-export interface IUserEntity extends IAbstractEntity<UserDto> {
+export interface IUserEntity extends IAbstractEntity {
   username?: string;
 
   password?: string;
@@ -14,28 +12,16 @@ export interface IUserEntity extends IAbstractEntity<UserDto> {
 
   name?: string;
 
-  phone?: string;
-
-  gender?: GenderType;
-
-  avatar?: string;
-
-  address?: string;
-
   isActive?: boolean;
 }
 
 @Entity({ name: 'users' })
-@UseDto(UserDto)
-export class UserEntity
-  extends AbstractEntity<UserDto, UserDtoOptions>
-  implements IUserEntity
-{
+export class UserEntity extends AbstractEntity implements IUserEntity {
   @Column()
   username: string;
 
   @Column()
-  password: string;
+  password?: string;
 
   @Column({ type: 'enum', enum: RoleType, default: RoleType.USER })
   role: RoleType;
@@ -43,18 +29,14 @@ export class UserEntity
   @Column()
   name: string;
 
-  @Column({ nullable: true })
-  phone: string;
+  @OneToOne(() => ProfileEntity, (profile) => profile.user, {
+    cascade: ['insert'],
+  })
+  @JoinColumn()
+  profile: ProfileEntity;
 
-  @Column({ type: 'enum', enum: GenderType, default: GenderType.MALE })
-  gender: GenderType;
-
-  @Column({ nullable: true })
-  avatar: string;
-
-  @Column()
-  address: string;
-
-  // @Column()
-  // isActive: boolean;
+  constructor(user?: Partial<UserEntity>) {
+    super();
+    Object.assign(this, user);
+  }
 }

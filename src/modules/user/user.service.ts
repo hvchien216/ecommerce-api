@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { UserRepository } from './user.repository';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { UserEntity } from './user.entity';
 import { FindOneOptions, Repository } from 'typeorm';
-import { UserRegisterDto } from '../auth/dto/user-register.dto';
+import { CreateUserRequestDto } from './dtos/user-register-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import isNil from 'lodash/isNil';
+import { UserMapper } from './users.mapper';
+import { UserResponseDto } from './dtos/user.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -15,11 +17,22 @@ export class UserService {
     return this.userRepository.findOne(findData);
   }
 
-  async create(userRegisterDto: UserRegisterDto): Promise<UserEntity> {
-    const user = this.userRepository.create(userRegisterDto);
+  async create(
+    userRegisterDto: CreateUserRequestDto,
+  ): Promise<UserResponseDto> {
+    const foundUser = await this.userRepository.findOne({
+      where: {
+        username: userRegisterDto.username,
+      },
+    });
 
-    await this.userRepository.save(user);
+    if (!isNil(foundUser)) {
+      throw new ForbiddenException('Credentials taken');
+    }
 
-    return user;
+    let userEntity = UserMapper.toCreateEntity(userRegisterDto);
+    userEntity = await this.userRepository.save(userEntity);
+
+    return UserMapper.toDtoWithRelations(userEntity);
   }
 }

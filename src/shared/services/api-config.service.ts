@@ -103,6 +103,14 @@ export class ApiConfigService {
     };
   }
 
+  get redisConfig() {
+    return {
+      redisCacheEnabled: this.getString('REDIS_CACHE_ENABLED'),
+      redisHost: this.getString('REDIS_HOST'),
+      redisPort: this.getString('REDIS_PORT'),
+    };
+  }
+
   get awsS3Config() {
     return {
       bucketRegion: this.getString('AWS_S3_BUCKET_REGION'),
@@ -119,13 +127,18 @@ export class ApiConfigService {
     return {
       privateKey: this.getString('JWT_PRIVATE_KEY'),
       publicKey: this.getString('JWT_PUBLIC_KEY'),
-      jwtExpirationTime: this.getNumber('JWT_EXPIRATION_TIME'),
+      refreshTokenExpirationTime: this.getString(
+        'REFRESH_TOKEN_EXPIRATION_TIME',
+      ),
+      accessTokenExpirationTime: this.getString('ACCESS_TOKEN_EXPIRATION_TIME'),
     };
   }
 
   get appConfig() {
     return {
       port: this.getString('PORT'),
+      enableDocumentation: this.getString('ENABLE_DOCUMENTATION'),
+      apiVersion: this.getString('API_VERSION'),
     };
   }
 
