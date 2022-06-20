@@ -1,7 +1,8 @@
 import { AbstractEntity, IAbstractEntity } from '../../common/abstract.entity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, OneToOne } from 'typeorm';
 import { RoleType } from '../../constants';
 import { ProfileEntity } from '../profile/profile.entity';
+import { StoreEntity } from '../store/store.entity';
 
 export interface IUserEntity extends IAbstractEntity {
   username?: string;
@@ -34,6 +35,9 @@ export class UserEntity extends AbstractEntity implements IUserEntity {
   })
   @JoinColumn()
   profile: ProfileEntity;
+
+  @ManyToMany(() => StoreEntity, (store: StoreEntity) => store.employees)
+  store: StoreEntity[];
 
   constructor(user?: Partial<UserEntity>) {
     super();

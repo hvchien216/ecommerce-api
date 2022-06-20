@@ -61,6 +61,20 @@ export class StoreService {
   async create(
     createStoreRequestDto: CreateStoreRequestDto,
   ): Promise<StoreResponseDto> {
+    // const store = await this.storeRepository.findOne({
+    //   where: {
+    //     slug,
+    //   },
+    // });
+
+    // if (store) {
+    //   const errors = { message: 'Slug must be unique.' };
+    //   throw new HttpException(
+    //     { message: 'Input data validation failed', errors },
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
     let storeEntity = StoreMapper.toCreateEntity(createStoreRequestDto);
 
     storeEntity = await this.storeRepository.save(storeEntity);

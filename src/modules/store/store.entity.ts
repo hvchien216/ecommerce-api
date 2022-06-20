@@ -1,5 +1,6 @@
 import { AbstractEntity, IAbstractEntity } from '../../common/abstract.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+import { UserEntity } from '../user/user.entity';
 
 export interface IStoreEntity extends IAbstractEntity {
   name?: string;
@@ -21,6 +22,12 @@ export class StoreEntity extends AbstractEntity implements IStoreEntity {
     unique: true,
   })
   slug: string;
+
+  @ManyToMany(() => UserEntity, (user: UserEntity) => user.store, {
+    cascade: true,
+  })
+  @JoinTable()
+  employees: UserEntity[];
 
   constructor(store?: Partial<StoreEntity>) {
     super();

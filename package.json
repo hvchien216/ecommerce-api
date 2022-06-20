@@ -14,7 +14,7 @@
     "migration:create": "yarn run typeorm -- migration:create -n",
     "migration:generate": "yarn run typeorm -- migration:generate -n",
     "migration:run": "yarn run typeorm migration:run",
-    "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert",
+    "migration:revert": "yarn run typeorm migration:revert",
     "drop:schema": "yarn typeorm schema:drop",
     "start": "nest start",
     "start:dev": "NEST_DEBUG=true nest start --watch",
