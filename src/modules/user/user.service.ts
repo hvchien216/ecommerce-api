@@ -4,7 +4,7 @@ import { FindOneOptions, Repository } from 'typeorm';
 import { CreateUserRequestDto } from './dtos/user-register-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import isNil from 'lodash/isNil';
-import { UserMapper } from './users.mapper';
+import { UserMapper } from './user.mapper';
 import { UserResponseDto } from './dtos/user.dto';
 @Injectable()
 export class UserService {

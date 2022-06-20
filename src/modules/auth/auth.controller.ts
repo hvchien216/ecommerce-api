@@ -27,7 +27,7 @@ import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { TokenPayloadDto } from './dtos/token-payload.dto';
 import { UserLoginDto } from '../user/dtos/user-login.dto';
 import { CreateUserRequestDto } from '../user/dtos/user-register-request.dto';
-import { UserMapper } from '../user/users.mapper';
+import { UserMapper } from '../user/user.mapper';
 
 @Controller('auth')
 @ApiTags('auth')
