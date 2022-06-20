@@ -57,6 +57,8 @@ export class ApiConfigService {
       __dirname + '/../../modules/**/*.view-entity{.ts,.js}',
     ];
     const migrations = [__dirname + '/../../database/migrations/*{.ts,.js}'];
+    const seeds = ['src/database/seeds/**/*{.ts,.js}'];
+    const factories = ['src/database/factories/**/*{.ts,.js}'];
 
     // if (module.hot) {
     //   const entityContext = require.context(
@@ -87,6 +89,8 @@ export class ApiConfigService {
     return {
       entities,
       migrations,
+      seeds,
+      factories,
       // keepConnectionAlive: !this.isTesst,
       dropSchema: this.isTest,
       // synchronize: true,

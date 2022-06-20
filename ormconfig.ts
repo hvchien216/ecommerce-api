@@ -18,11 +18,11 @@ const configs: TypeOrmModuleOptions & {
     'src/modules/**/*.view-entity{.ts,.js}',
   ],
   migrations: ['src/database/migrations/*{.ts,.js}'],
+  seeds: ['src/database/seeds/**/*{.ts,.js}'],
+  factories: ['src/database/factories/**/*{.ts,.js}'],
   cli: {
     migrationsDir: 'src/database/migrations',
   },
-  // seeds: ['src/database/seeds/**/*{.ts,.js}'],
-  // factories: ['src/database/factories/**/*{.ts,.js}'],
 };
 
 // export const dataSource = new DataSource(configs);

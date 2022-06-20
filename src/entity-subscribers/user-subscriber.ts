@@ -14,14 +14,14 @@ export class UserSubscriber implements EntitySubscriberInterface {
   }
 
   async beforeInsert(event: InsertEvent<UserEntity>): Promise<void> {
-    console.log('beforeInsert====>', event);
+    console.log('beforeInsert====>', event.entity);
     if (event.entity.password) {
       event.entity.password = await generateHash(event.entity.password);
     }
   }
 
   async beforeUpdate(event: UpdateEvent<UserEntity>): Promise<void> {
-    console.log('beforeUpdate====>', event);
+    console.log('beforeUpdate====>', event.entity);
     const entity = event.entity as UserEntity;
 
     if (entity.password !== event.databaseEntity.password) {

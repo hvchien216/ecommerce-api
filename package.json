@@ -16,6 +16,9 @@
     "migration:run": "yarn run typeorm migration:run",
     "migration:revert": "yarn run typeorm migration:revert",
     "drop:schema": "yarn typeorm schema:drop",
+    "typeorm-seeding": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js",
+    "seed:config": "npm run typeorm-seeding config",
+    "seed": "npm run typeorm-seeding seed",
     "start": "nest start",
     "start:dev": "NEST_DEBUG=true nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -50,7 +53,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "swagger-ui-express": "^4.4.0",
-    "typeorm": "0.2.45"
+    "typeorm": "0.2.45",
+    "typeorm-seeding": "^1.6.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
@@ -58,6 +62,7 @@
     "@nestjs/testing": "^8.0.0",
     "@types/cache-manager": "^4.0.0",
     "@types/express": "^4.17.13",
+    "@types/faker": "^6.6.9",
     "@types/jest": "27.5.0",
     "@types/node": "^16.0.0",
     "@types/passport-jwt": "^3.0.6",
