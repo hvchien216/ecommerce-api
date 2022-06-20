@@ -8,6 +8,8 @@ import { ApiConfigService } from './shared/services/api-config.service';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { ProductModule } from './modules/product/product.module';
+import { StoreModule } from './modules/store/store.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,6 +24,8 @@ import { ProfileModule } from './modules/profile/profile.module';
     UserModule,
     AuthModule,
     ProfileModule,
+    ProductModule,
+    StoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
