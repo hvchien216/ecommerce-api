@@ -10,6 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { ProductModule } from './modules/product/product.module';
 import { StoreModule } from './modules/store/store.module';
+import { CategoryModule } from './modules/category/category.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +27,7 @@ import { StoreModule } from './modules/store/store.module';
     ProfileModule,
     ProductModule,
     StoreModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
