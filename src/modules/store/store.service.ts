@@ -3,17 +3,23 @@ import {
   PaginationRequest,
   PaginationResponseDto,
 } from '@/libs/pagitation';
+import { Helpers } from '@/utils/helpers';
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   RequestTimeoutException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { profile } from 'console';
 import { TimeoutError } from 'rxjs';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
+import { UserEntity } from '../user/user.entity';
 import {
   CreateStoreRequestDto,
+  LinkEmployeeToStoreRequestDto,
   StoreResponseDto,
   UpdateStoreRequestDto,
 } from './dtos';
@@ -25,14 +31,37 @@ export class StoreService {
   constructor(
     @InjectRepository(StoreEntity)
     private storeRepository: Repository<StoreEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+    private helpers: Helpers,
   ) {}
 
   async getStores(
     pagination: PaginationRequest,
   ): Promise<PaginationResponseDto<StoreResponseDto>> {
     try {
+      const {
+        skip,
+        limit: take,
+        order,
+        params: { search },
+      } = pagination;
+      const options = {
+        skip,
+        take,
+        order,
+        // relations: ['employees', 'employees.profile'],
+        // select
+      };
+
+      if (search) {
+        options['where'] = {
+          name: ILike(`%${search}%`),
+        };
+      }
+
       const [storeEntities, totalStores] =
-        await this.storeRepository.findAndCount(pagination);
+        await this.storeRepository.findAndCount(options);
 
       const StoreDtos = await Promise.all(storeEntities.map(StoreMapper.toDto));
       return Pagination.of(pagination, totalStores, StoreDtos);
@@ -49,33 +78,56 @@ export class StoreService {
   }
 
   async getStoreById(storeId: Uuid): Promise<StoreResponseDto> {
-    const storeEntity = await this.storeRepository.findOne(storeId);
+    const storeEntity = await this.storeRepository.findOne({
+      where: {
+        id: storeId,
+      },
+      relations: ['employees', 'employees.profile'],
+    });
 
     if (!storeEntity) {
       throw new NotFoundException();
     }
 
-    return StoreMapper.toDto(storeEntity);
+    return StoreMapper.toDtoWithRelations(storeEntity);
   }
 
   async create(
     createStoreRequestDto: CreateStoreRequestDto,
   ): Promise<StoreResponseDto> {
-    // const store = await this.storeRepository.findOne({
-    //   where: {
-    //     slug,
-    //   },
-    // });
+    const store = await this.storeRepository.findOne({
+      where: {
+        slug: createStoreRequestDto.slug,
+      },
+    });
 
-    // if (store) {
-    //   const errors = { message: 'Slug must be unique.' };
-    //   throw new HttpException(
-    //     { message: 'Input data validation failed', errors },
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
+    if (store) {
+      const errors = { message: 'Slug must be unique.' };
+      throw new HttpException(
+        { message: 'Input data validation failed', errors },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     let storeEntity = StoreMapper.toCreateEntity(createStoreRequestDto);
+    const { employeesId } = createStoreRequestDto;
+    if (employeesId?.length > 0) {
+      const users = await this.userRepository.findByIds(employeesId);
+
+      const userExists = this.helpers.dataExists({
+        data: users,
+        dataIds: employeesId,
+      });
+
+      if (!userExists) {
+        throw new HttpException(
+          { message: 'User not found' },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      storeEntity.employees = users;
+    }
 
     storeEntity = await this.storeRepository.save(storeEntity);
 
@@ -100,5 +152,55 @@ export class StoreService {
     storeEntity = await this.storeRepository.save(storeEntity);
 
     return StoreMapper.toDto(storeEntity);
+  }
+
+  async linkEmployees(
+    storeId: Uuid,
+    { employeesId }: LinkEmployeeToStoreRequestDto,
+  ): Promise<StoreResponseDto> {
+    let store = await this.storeRepository.findOne(storeId, {
+      relations: ['employees', 'employees.profile'],
+      // relations: ['employees', 'products'],
+    });
+
+    const users = await this.userRepository.findByIds(employeesId, {
+      relations: ['profile'],
+    });
+    // const userExists = this.helpers.dataExists({
+    //   data: users,
+    //   dataIds: employeesId,
+    // });
+
+    console.log('store===>', store);
+
+    if (!store) {
+      throw new HttpException(
+        { message: 'Store not found' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // if (!userExists) {
+    //   throw new HttpException(
+    //     { message: 'User not found' },
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+
+    store.employees.forEach((employee) => {
+      employeesId.forEach((id) => {
+        if (employee.id === id) {
+          throw new HttpException(
+            { message: 'Employee already registered to store' },
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      });
+    });
+
+    store.employees = [...store.employees, ...users];
+    store = await this.storeRepository.save(store);
+
+    return StoreMapper.toDtoWithRelations(store);
   }
 }

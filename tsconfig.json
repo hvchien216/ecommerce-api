@@ -27,6 +27,7 @@
       "@/modules/*": ["src/modules/*"],
       "@/shared/*": ["src/shared/*"],
       "@/libs/*": ["src/libs/*"],
+      "@/utils/*": ["src/utils/*"],
     }
   }
 }

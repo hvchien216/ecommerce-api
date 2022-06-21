@@ -1,6 +1,7 @@
 import { GenderType } from '@/constants/gener-type';
 import { RoleType } from '@/constants/role-type';
 import { StoreMapper } from '@/modules/store/store.mapper';
+import { UserEntity } from '@/modules/user/user.entity';
 import { UserMapper } from '@/modules/user/user.mapper';
 import { Connection } from 'typeorm';
 import { Factory, Seeder } from 'typeorm-seeding';
@@ -26,6 +27,7 @@ const stores = [
     name: 'Adidas Official Store',
     bio: 'Thịt Đại Bàng hàng real',
     slug: 'adidas-official-store',
+    employeesId: [],
   },
 ];
 

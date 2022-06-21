@@ -1,9 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 
 import { Trim } from '../../../decorators/transform.decorators';
+import { LinkEmployeeToStoreRequestDto } from './link-employee-to-store-request.dto';
 
-export class CreateStoreRequestDto {
+export class CreateStoreRequestDto extends LinkEmployeeToStoreRequestDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()

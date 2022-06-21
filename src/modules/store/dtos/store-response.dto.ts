@@ -1,25 +1,21 @@
-import { Trim } from '@/decorators/transform.decorators';
+import { UserResponseDto } from '@/modules/user/dtos/user.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
 
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 import { StoreEntity } from '../store.entity';
 
 export class StoreResponseDto extends AbstractDto {
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  @Trim()
   name: string;
 
   @ApiPropertyOptional()
   bio?: string;
 
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  @Trim()
   slug: string;
+
+  @ApiProperty()
+  employees: UserResponseDto[];
 
   constructor(store: StoreEntity) {
     super(store);
