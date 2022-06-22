@@ -1,35 +1,45 @@
 import { AbstractEntity, IAbstractEntity } from '../../common/abstract.entity';
 import { Column, Entity, JoinColumn } from 'typeorm';
-import { RoleType } from '../../constants';
+import { ProductStatusType, RoleType } from '../../constants';
 import { ProfileEntity } from '../profile/profile.entity';
 
 export interface IProductsEntity extends IAbstractEntity {
-  name: string;
-  desc?: string;
+  title: string;
+  description?: string;
   slug: string;
-  thumb?: string;
+  thumbnail?: string;
+  images?: string;
   code: string;
+  status: ProductStatusType;
 }
 
 @Entity({ name: 'products' })
 export class ProductEntity extends AbstractEntity implements IProductsEntity {
   @Column()
-  name: string;
+  title: string;
 
   @Column({ nullable: true })
-  decs: string;
+  description: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   slug: string;
 
   @Column({ nullable: true })
-  thumb: string;
+  thumbnail: string;
+
+  @Column({ nullable: true })
+  images: string;
+
+  @Column({ enum: ProductStatusType, default: ProductStatusType.IN_STOCK })
+  status: ProductStatusType;
 
   @Column()
   code: string;
 
-  constructor(user?: Partial<ProductEntity>) {
+  constructor(product?: Partial<ProductEntity>) {
     super();
-    Object.assign(this, user);
+    Object.assign(this, product);
   }
 }

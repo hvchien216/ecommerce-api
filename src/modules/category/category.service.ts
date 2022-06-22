@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { CategoryEntity } from './category.entity';
 import { CategoryMapper } from './category.mapper';
 import { CategoryResponseDto, CreateUpdateCategoryRequestDto } from './dtos';
@@ -13,10 +13,14 @@ export class CategoryService {
   ) {}
 
   async getCategories(): Promise<CategoryResponseDto[]> {
-    const categoriesEntity = await this.categoryRepository.find();
-
+    const categoriesEntity = await this.categoryRepository.find({
+      relations: ['childCategories'],
+      where: {
+        parent_id: IsNull(),
+      },
+    });
     return await Promise.all(
-      (await categoriesEntity).map(CategoryMapper.toDto),
+      (await categoriesEntity).map(CategoryMapper.toDtoWithRelations),
     );
   }
 
@@ -51,10 +55,22 @@ export class CategoryService {
   }
 
   async softDelete(category_id: Uuid): Promise<boolean> {
-    await this.categoryRepository.softDelete({
-      id: category_id,
-    });
+    const deleteResponse = await this.categoryRepository.softDelete(
+      category_id,
+    );
 
+    if (!deleteResponse.affected) {
+      throw new NotFoundException();
+    }
+
+    return true;
+  }
+
+  async restoreDeleted(id: Uuid): Promise<boolean> {
+    const restoreResponse = await this.categoryRepository.restore(id);
+    if (!restoreResponse.affected) {
+      throw new NotFoundException();
+    }
     return true;
   }
 }

@@ -7,6 +7,21 @@ export class CategoryMapper {
     return dto;
   }
 
+  public static async toDtoWithRelations(
+    entity: CategoryEntity,
+  ): Promise<CategoryResponseDto> {
+    const dto = new CategoryResponseDto(entity);
+    if (entity.childCategories?.length) {
+      dto.children = await Promise.all(
+        (await entity.childCategories)?.map(CategoryMapper.toDtoWithRelations),
+      );
+    } else {
+      dto.children = null;
+    }
+
+    return dto;
+  }
+
   public static toCreateEntity(
     dto: CreateUpdateCategoryRequestDto,
   ): CategoryEntity {

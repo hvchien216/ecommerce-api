@@ -16,8 +16,5 @@ export class CreateUpdateCategoryRequestDto {
   readonly description?: string;
 
   @ApiPropertyOptional()
-  @IsUUID()
-  @IsString()
-  @Trim()
   readonly parent_id?: Uuid;
 }

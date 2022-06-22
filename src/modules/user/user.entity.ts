@@ -1,6 +1,6 @@
-import { AbstractEntity, IAbstractEntity } from '../../common/abstract.entity';
 import { Column, Entity, JoinColumn, ManyToMany, OneToOne } from 'typeorm';
-import { RoleType } from '../../constants';
+import { AbstractEntity, IAbstractEntity } from '@/common/abstract.entity';
+import { RoleType } from '@/constants/role-type';
 import { ProfileEntity } from '../profile/profile.entity';
 import { StoreEntity } from '../store/store.entity';
 
@@ -18,7 +18,7 @@ export interface IUserEntity extends IAbstractEntity {
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity implements IUserEntity {
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column()

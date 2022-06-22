@@ -13,6 +13,9 @@ export class CategoryResponseDto extends AbstractDto {
   @ApiProperty()
   parent_id?: Uuid;
 
+  @ApiProperty()
+  children?: CategoryResponseDto[];
+
   constructor(category: CategoryEntity) {
     super(category);
     this.title = category.title;

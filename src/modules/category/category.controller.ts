@@ -46,4 +46,10 @@ export class CategoryController {
   async removeCategory(@UUIDParam('id') categoryId: Uuid): Promise<boolean> {
     return this.categoryService.softDelete(categoryId);
   }
+
+  @ApiOperation({ description: 'restore category deleted' })
+  @Put('/:id/restore')
+  async restoredCategory(@UUIDParam('id') categoryId: Uuid): Promise<boolean> {
+    return this.categoryService.restoreDeleted(categoryId);
+  }
 }
