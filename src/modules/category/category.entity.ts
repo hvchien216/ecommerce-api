@@ -8,6 +8,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
+import { ProductEntity } from '../product/product.entity';
 
 export interface ICategoryEntity extends IAbstractEntity {
   title: string;
@@ -40,6 +41,15 @@ export class CategoryEntity extends AbstractEntity implements ICategoryEntity {
 
   @OneToMany(() => CategoryEntity, (category) => category.parentCategory)
   childCategories: CategoryEntity[];
+
+  @OneToMany(
+    () => ProductEntity,
+    (product: ProductEntity) => product.category,
+    {
+      cascade: true,
+    },
+  )
+  products: ProductEntity[];
 
   @DeleteDateColumn()
   deletedAt: Date;

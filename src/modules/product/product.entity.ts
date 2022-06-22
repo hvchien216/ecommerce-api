@@ -1,7 +1,14 @@
-import { AbstractEntity, IAbstractEntity } from '../../common/abstract.entity';
-import { Column, Entity, JoinColumn } from 'typeorm';
-import { ProductStatusType, RoleType } from '../../constants';
-import { ProfileEntity } from '../profile/profile.entity';
+import { AbstractEntity, IAbstractEntity } from '@/common/abstract.entity';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
+import { ProductStatusType } from '../../constants';
+import { CategoryEntity } from '../category/category.entity';
+import { StoreEntity } from '../store/store.entity';
 
 export interface IProductsEntity extends IAbstractEntity {
   title: string;
@@ -37,6 +44,17 @@ export class ProductEntity extends AbstractEntity implements IProductsEntity {
 
   @Column()
   code: string;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
+
+  @ManyToOne(() => StoreEntity, (store) => store.products)
+  @JoinColumn({ name: 'store_id' })
+  storeOwner: StoreEntity;
+
+  @ManyToOne(() => CategoryEntity, (category) => category.parentCategory)
+  @JoinColumn({ name: 'category_id' })
+  category: CategoryEntity;
 
   constructor(product?: Partial<ProductEntity>) {
     super();
