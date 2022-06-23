@@ -18,6 +18,7 @@ import {
   StoreResponseDto,
   UpdateStoreRequestDto,
 } from './dtos';
+import { QueryStoresRequestDto } from './dtos/query-stores-request.dto';
 import { StoreService } from './store.service';
 
 @ApiTags('Store')
@@ -28,7 +29,7 @@ export class StoreController {
   @ApiOperation({ description: 'Get a paginated store list' })
   @Get()
   async getStores(
-    @PaginationParams() pagination: PaginationRequest,
+    @PaginationParams() pagination: PaginationRequest<QueryStoresRequestDto>,
   ): Promise<PaginationResponseDto<StoreResponseDto>> {
     return this.storeService.getStores(pagination);
   }

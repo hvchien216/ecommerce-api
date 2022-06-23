@@ -2,8 +2,8 @@ import { PaginationRequest } from './interfaces';
 import { PaginationResponseDto } from './pagination-response.dto';
 
 export class Pagination {
-  static of<T>(
-    { limit, page, skip }: PaginationRequest,
+  static of<T, Q>(
+    { limit, page, skip }: PaginationRequest<Q>,
     totalRecords: number,
     dtos: T[],
   ): PaginationResponseDto<T> {

@@ -1,7 +1,7 @@
 /**
  * Interface intended for requesting results paginated
  */
-export interface PaginationRequest {
+export interface PaginationRequest<T> {
   // Number of records to skip (where the pagination shall start)
   skip: number;
   /**
@@ -21,5 +21,5 @@ export interface PaginationRequest {
   order?: { [field: string]: 'ASC' | 'DESC' };
 
   // Other params of type T
-  params?: any;
+  params?: T;
 }

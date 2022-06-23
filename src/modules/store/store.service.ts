@@ -23,6 +23,7 @@ import {
   StoreResponseDto,
   UpdateStoreRequestDto,
 } from './dtos';
+import { QueryStoresRequestDto } from './dtos/query-stores-request.dto';
 import { StoreEntity } from './store.entity';
 import { StoreMapper } from './store.mapper';
 
@@ -37,14 +38,14 @@ export class StoreService {
   ) {}
 
   async getStores(
-    pagination: PaginationRequest,
+    pagination: PaginationRequest<QueryStoresRequestDto>,
   ): Promise<PaginationResponseDto<StoreResponseDto>> {
     try {
       const {
         skip,
         limit: take,
         order,
-        params: { search },
+        params: { q },
       } = pagination;
       const options = {
         skip,
@@ -54,9 +55,9 @@ export class StoreService {
         // select
       };
 
-      if (search) {
+      if (q) {
         options['where'] = {
-          name: ILike(`%${search}%`),
+          name: ILike(`%${q}%`),
         };
       }
 

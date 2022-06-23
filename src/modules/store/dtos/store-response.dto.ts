@@ -15,7 +15,7 @@ export class StoreResponseDto extends AbstractDto {
   slug: string;
 
   @ApiProperty()
-  employees: UserResponseDto[];
+  employees?: UserResponseDto[];
 
   constructor(store: StoreEntity) {
     super(store);
