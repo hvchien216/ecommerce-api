@@ -11,6 +11,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { ProductModule } from './modules/product/product.module';
 import { StoreModule } from './modules/store/store.module';
 import { CategoryModule } from './modules/category/category.module';
+import { UploadModule } from './modules/upload/upload.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +29,7 @@ import { CategoryModule } from './modules/category/category.module';
     ProductModule,
     StoreModule,
     CategoryModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
