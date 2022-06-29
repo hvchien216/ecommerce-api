@@ -1,6 +1,6 @@
 import { PaginationRequest } from '@/libs/pagitation';
 import { Connection, EntityRepository, Repository } from 'typeorm';
-import { QueryProductsRequestDto } from './dtos/query-products-request.dto';
+import { QueryProductsRequestDto } from './dtos';
 import { ProductEntity } from './product.entity';
 
 @EntityRepository(ProductEntity)
@@ -57,7 +57,7 @@ export class ProductsRepository extends Repository<ProductEntity> {
   }
 }
 
-export const ImageRepositoryProvider = {
+export const ProductRepositoryProvider = {
   provide: 'ProductsRepository',
   useFactory: (connection: Connection) =>
     connection.getCustomRepository(ProductsRepository),

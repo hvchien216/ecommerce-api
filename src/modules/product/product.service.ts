@@ -16,10 +16,18 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { TimeoutError } from 'rxjs';
 import { Repository } from 'typeorm';
+import { AttributeMapper } from '../attribute/attribute.mapper';
 import { CategoryEntity } from '../category/category.entity';
+import { UpdateProductVariantsRequestDto } from '../product-variant/dtos';
+import { ProductVariantEntity } from '../product-variant/product-variant.entity';
+import { ProductVariantMapper } from '../product-variant/product-variant.mapper';
+import { ProductVariantService } from '../product-variant/product-variant.service';
 import { StoreEntity } from '../store/store.entity';
-import { CreateProductRequestDto, ProductResponseDto } from './dtos';
-import { QueryProductsRequestDto } from './dtos/query-products-request.dto';
+import {
+  CreateProductRequestDto,
+  ProductResponseDto,
+  QueryProductsRequestDto,
+} from './dtos';
 import { ProductMapper } from './product.mapper';
 import { ProductsRepository } from './product.repository';
 
@@ -30,8 +38,11 @@ export class ProductService {
     private productRepository: ProductsRepository,
     @InjectRepository(CategoryEntity)
     private categoryRepository: Repository<CategoryEntity>,
+    @InjectRepository(ProductVariantEntity)
+    private productVariantRepository: Repository<ProductVariantEntity>,
     @InjectRepository(StoreEntity)
     private storeRepository: Repository<StoreEntity>,
+    private productVariantService: ProductVariantService,
   ) {}
 
   async getList(
@@ -61,9 +72,9 @@ export class ProductService {
   async create(
     createProductDto: CreateProductRequestDto,
   ): Promise<ProductResponseDto> {
-    const storeEntity = await this.storeRepository.findOne(
-      createProductDto.storeId,
-    );
+    const { categoryId, storeId, attributes } = createProductDto;
+
+    const storeEntity = await this.storeRepository.findOne(storeId);
 
     if (!storeEntity) {
       throw new HttpException(
@@ -72,9 +83,7 @@ export class ProductService {
       );
     }
 
-    const categoryEntity = await this.categoryRepository.findOne(
-      createProductDto.categoryId,
-    );
+    const categoryEntity = await this.categoryRepository.findOne(categoryId);
 
     if (!categoryEntity) {
       throw new HttpException(
@@ -82,13 +91,86 @@ export class ProductService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    console.log(
-      'productRepository===>',
-      this.productRepository.getProductsAndCount,
+
+    const attributeEntities = await Promise.all(
+      attributes.map(AttributeMapper.toCreateEntity),
     );
+
+    const productVariants =
+      this.productVariantService.generateModels(attributeEntities);
+
+    const productVariantEntities = (await productVariants).map((pV) => {
+      const productVariantEntity =
+        ProductVariantMapper.toCreateEntityWithAttributeItems({
+          name: pV.name,
+          price: 0,
+          quantity: 0,
+        });
+      productVariantEntity.attributeItems = pV.entities;
+      return productVariantEntity;
+    });
+
     let productEntity = ProductMapper.toCreateEntity(createProductDto);
     productEntity.category = categoryEntity;
     productEntity.storeOwner = storeEntity;
+    productEntity.attributes = attributeEntities;
+    productEntity.variants = productVariantEntities;
+
+    productEntity = await this.productRepository.save(productEntity);
+
+    return ProductMapper.toDtoWithRelations(productEntity);
+  }
+
+  async getProduct(productId: Uuid): Promise<ProductResponseDto> {
+    const productEntity = await this.productRepository.findOne(productId, {
+      relations: ['variants', 'category', 'storeOwner'],
+    });
+
+    if (!productEntity) {
+      throw new HttpException(
+        { message: 'Product not found' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return ProductMapper.toDtoWithRelations(productEntity);
+  }
+
+  async updateInventory(
+    productId: Uuid,
+    { models }: { models: UpdateProductVariantsRequestDto[] },
+  ): Promise<ProductResponseDto> {
+    let productEntity = await this.productRepository.findOne(productId, {
+      relations: ['variants', 'category', 'storeOwner'],
+    });
+
+    if (!productEntity) {
+      throw new HttpException(
+        { message: 'Product not found' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const pVariantIds = models.map(
+      ({ product_variant_id }) => product_variant_id,
+    );
+
+    let productVariants = await this.productVariantRepository.findByIds(
+      pVariantIds,
+    );
+
+    productVariants = productVariants.map<ProductVariantEntity>((pV) => {
+      const pVMatched = models.find((m) => m.product_variant_id === pV.id);
+
+      return !pVMatched
+        ? pV
+        : { ...pV, price: pVMatched.price, quantity: pVMatched.quantity };
+    });
+
+    productEntity = ProductMapper.toUpdateModelsOfEntity(
+      productEntity,
+      productVariants,
+    );
 
     productEntity = await this.productRepository.save(productEntity);
 
@@ -135,3 +217,67 @@ export class ProductService {
   //   return true;
   // }
 }
+// const attributes = [
+//   {
+//     attribute: 'Color',
+//     attribute_items: ['Yellow', 'Green', 'Red'],
+//   },
+//   {
+//     attribute: 'Size',
+//     attribute_items: ['S', 'M', 'L'],
+//   },
+// ];
+
+// const variants = [
+//   {
+//     ID: 1,
+//     name: 'Yellow,S',
+//   },
+//   {
+//     ID: 2,
+//     name: 'Yellow,M',
+//   },
+//   {
+//     ID: 3,
+//     name: 'Yellow,L',
+//   },
+//   {
+//     ID: 4,
+//     name: 'Green,S',
+//   },
+//   {
+//     ID: 5,
+//     name: 'Green,M',
+//   },
+//   {
+//     ID: 6,
+//     name: 'Green,L',
+//   },
+//   {
+//     ID: 7,
+//     name: 'Red,S',
+//   },
+//   {
+//     ID: 8,
+//     name: 'Red,M',
+//   },
+//   {
+//     ID: 9,
+//     name: 'Red,L',
+//   },
+// ];
+// //Table attribute_item
+// id      name
+// 1       Yellow
+// 2       Green
+// 3       Red
+// 4       S
+// 5       M
+// 6       L
+
+// //Table product_variants_attribute_item
+// id  product_variant_id attribute_item_id
+// 1    1                  1
+// 2    1                  4
+// 3    2                  1
+// 4    2                  5

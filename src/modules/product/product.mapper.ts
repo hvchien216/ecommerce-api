@@ -1,4 +1,6 @@
 import { CategoryMapper } from '../category/category.mapper';
+import { ProductVariantEntity } from '../product-variant/product-variant.entity';
+import { ProductVariantMapper } from '../product-variant/product-variant.mapper';
 import { StoreMapper } from '../store/store.mapper';
 import {
   CreateProductRequestDto,
@@ -17,6 +19,10 @@ export class ProductMapper {
   ): Promise<ProductResponseDto> {
     const dto = new ProductResponseDto(entity);
     dto.category = CategoryMapper.toDto(entity.category);
+    dto.storeOwner = StoreMapper.toDto(entity.storeOwner);
+    dto.models = await Promise.all(
+      entity.variants.map((v) => ProductVariantMapper.toDto(v)),
+    );
     dto.storeOwner = StoreMapper.toDto(entity.storeOwner);
     return dto;
   }
@@ -42,6 +48,14 @@ export class ProductMapper {
     entity.thumbnail = dto.thumbnail;
     entity.images = dto.images;
     entity.status = dto.status;
+    return entity;
+  }
+
+  public static toUpdateModelsOfEntity(
+    entity: ProductEntity,
+    variants: ProductVariantEntity[],
+  ): ProductEntity {
+    entity.variants = variants;
     return entity;
   }
 }

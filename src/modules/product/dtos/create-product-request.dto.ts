@@ -1,4 +1,5 @@
 import { ProductStatusType } from '@/constants/product-status-type';
+import { CreateAttributeInProductRequestDto } from '@/modules/attribute/dtos/attribute-in-product-request.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
@@ -41,4 +42,11 @@ export class CreateProductRequestDto {
 
   @ApiProperty()
   storeId: Uuid;
+
+  // NOTED
+  @ApiProperty({
+    isArray: true,
+    type: CreateAttributeInProductRequestDto,
+  })
+  attributes: CreateAttributeInProductRequestDto[];
 }

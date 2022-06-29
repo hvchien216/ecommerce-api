@@ -1,3 +1,4 @@
+import { UUIDParam } from '@/decorators/http.decorators';
 import {
   PaginationParams,
   PaginationRequest,
@@ -12,9 +13,12 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CategoryResponseDto } from '../category/dtos';
-import { CreateProductRequestDto, ProductResponseDto } from './dtos';
-import { QueryProductsRequestDto } from './dtos/query-products-request.dto';
+import { UpdateProductVariantsRequestDto } from '../product-variant/dtos';
+import {
+  CreateProductRequestDto,
+  ProductResponseDto,
+  QueryProductsRequestDto,
+} from './dtos';
 import { ProductService } from './product.service';
 
 @ApiTags('Product')
@@ -24,43 +28,38 @@ export class ProductController {
 
   @ApiOperation({ description: 'Get a paginated product no variant list' })
   @Get()
-  async getStores(
+  async getProducts(
     @PaginationParams() pagination: PaginationRequest<QueryProductsRequestDto>,
-  ): Promise<PaginationResponseDto<CategoryResponseDto>> {
+  ): Promise<PaginationResponseDto<ProductResponseDto>> {
     return this.productService.getList(pagination);
   }
 
-  @ApiOperation({ description: 'create category' })
+  @ApiOperation({ description: 'get models of product' })
+  @Get('/:id')
+  async getProduct(
+    @UUIDParam('id')
+    productId: Uuid,
+  ): Promise<ProductResponseDto> {
+    return this.productService.getProduct(productId);
+  }
+
+  @ApiOperation({ description: 'create product' })
   @Post()
-  async createCategory(
+  async create(
     @Body(ValidationPipe)
     createCategoryRequestDto: CreateProductRequestDto,
   ): Promise<ProductResponseDto> {
     return this.productService.create(createCategoryRequestDto);
   }
 
-  // @ApiOperation({ description: 'update category' })
-  // @Put('/:id')
-  // async updateCategory(
-  //   @UUIDParam('id') categoryId: Uuid,
-  //   updateCategoryRequestDto: CreateUpdateCategoryRequestDto,
-  // ): Promise<CategoryResponseDto> {
-  //   return this.productService.update(categoryId, updateCategoryRequestDto);
-  // }
-
-  // @ApiOperation({ description: 'remove category' })
-  // @Delete('/:id')
-  // async removeCategory(@UUIDParam('id') categoryId: Uuid): Promise<boolean> {
-  //   return this.productService.softDelete(categoryId);
-  // }
-
-  // @ApiOperation({ description: 'restore category deleted' })
-  // @Put('/:id/restore')
-  // async restoredCategory(@UUIDParam('id') categoryId: Uuid): Promise<boolean> {
-  //   return this.productService.restoreDeleted(categoryId);
-  // }
+  @ApiOperation({ description: 'update price & quantity of models' })
+  @Put('/:id/models')
+  async updateInventory(
+    @UUIDParam('id')
+    productId: Uuid,
+    @Body(ValidationPipe)
+    data: { models: UpdateProductVariantsRequestDto[] },
+  ): Promise<ProductResponseDto> {
+    return this.productService.updateInventory(productId, data);
+  }
 }
-
-// Cái trải nghiệm là cái không bao giờ có thể rút ngắn được.
-// Dù em có trưởng thành đến đâu thì em cũng phải cần sự trải nghiệm
-// trong cuộc sống của em để em có cái được gọi là trải nghiệm

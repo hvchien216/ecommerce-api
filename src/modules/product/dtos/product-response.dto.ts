@@ -1,7 +1,9 @@
 import { ProductStatusType } from '@/constants/product-status-type';
+import { AttributeResponseDto } from '@/modules/attribute/dtos';
 import { CategoryResponseDto } from '@/modules/category/dtos';
+import { ProductVariantsResponseDto } from '@/modules/product-variant/dtos';
 import { StoreResponseDto } from '@/modules/store/dtos';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 import { ProductEntity } from '../product.entity';
@@ -10,17 +12,26 @@ export class ProductResponseDto extends AbstractDto {
   @ApiProperty()
   title: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   description?: string;
 
   @ApiProperty()
   slug: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   thumbnail?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   images?: string;
+
+  @ApiProperty()
+  price: number;
+
+  @ApiProperty()
+  price_min: number;
+
+  @ApiProperty()
+  price_max: number;
 
   @ApiProperty()
   code?: string;
@@ -28,11 +39,17 @@ export class ProductResponseDto extends AbstractDto {
   @ApiProperty()
   status: ProductStatusType;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   category?: CategoryResponseDto;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   storeOwner?: StoreResponseDto;
+
+  @ApiProperty()
+  tier_variations?: AttributeResponseDto[];
+
+  @ApiProperty()
+  models?: ProductVariantsResponseDto[];
 
   constructor(product: ProductEntity) {
     super(product);
@@ -41,6 +58,9 @@ export class ProductResponseDto extends AbstractDto {
     this.slug = product.slug;
     this.thumbnail = product.thumbnail;
     this.images = product.images;
+    this.price = product.price;
+    this.price_min = product.price_min;
+    this.price_max = product.price_max;
     this.code = product.code;
     this.status = product.status;
   }
