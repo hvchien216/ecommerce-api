@@ -1,3 +1,4 @@
+import { Helpers } from '@/utils/helpers';
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryEntity } from '../category/category.entity';
@@ -18,6 +19,6 @@ import { ProductService } from './product.service';
     TypeOrmModule.forFeature([ProductVariantEntity]),
   ],
   controllers: [ProductController],
-  providers: [ProductService, ProductRepositoryProvider],
+  providers: [ProductService, ProductRepositoryProvider, Helpers],
 })
 export class ProductModule {}

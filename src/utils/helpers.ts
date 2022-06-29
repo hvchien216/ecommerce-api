@@ -1,3 +1,4 @@
+/* eslint-disable prefer-spread */
 type GenerateSkuProps = {
   name: string;
   attributeName: string;
@@ -33,5 +34,18 @@ export class Helpers {
 
   dataExists({ data, dataIds }: GenericExists): boolean {
     return data.some((d) => dataIds.every((id) => id === d.id));
+  }
+
+  getMinMax(array: any, fieldToCheck: string): { min: number; max: number } {
+    const min = Math.min.apply(
+      Math,
+      array.map((m: { [x: string]: any }) => m[fieldToCheck]),
+    );
+    const max = Math.max.apply(
+      Math,
+      array.map((m: { [x: string]: any }) => m[fieldToCheck]),
+    );
+
+    return { min, max };
   }
 }

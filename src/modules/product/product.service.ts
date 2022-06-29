@@ -4,6 +4,7 @@ import {
   PaginationRequest,
   PaginationResponseDto,
 } from '@/libs/pagitation';
+import { Helpers } from '@/utils/helpers';
 import {
   HttpException,
   HttpStatus,
@@ -43,6 +44,7 @@ export class ProductService {
     @InjectRepository(StoreEntity)
     private storeRepository: Repository<StoreEntity>,
     private productVariantService: ProductVariantService,
+    private helpers: Helpers,
   ) {}
 
   async getList(
@@ -171,6 +173,15 @@ export class ProductService {
       productEntity,
       productVariants,
     );
+
+    const { min: priceMin, max: priceMax } = this.helpers.getMinMax(
+      productVariants,
+      'price',
+    );
+
+    productEntity.price = priceMin;
+    productEntity.price_min = priceMin;
+    productEntity.price_max = priceMax;
 
     productEntity = await this.productRepository.save(productEntity);
 
