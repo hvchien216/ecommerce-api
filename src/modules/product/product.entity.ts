@@ -9,7 +9,9 @@ import {
 } from 'typeorm';
 import { ProductStatusType } from '../../constants';
 import { AttributeEntity } from '../attribute/attribute.entity';
+import { CartLineEntity } from '../cart/cart-line.entity';
 import { CategoryEntity } from '../category/category.entity';
+import { OrderLineEntity } from '../order/order-line.entity';
 import { ProductVariantEntity } from '../product-variant/product-variant.entity';
 import { StoreEntity } from '../store/store.entity';
 
@@ -79,6 +81,12 @@ export class ProductEntity extends AbstractEntity implements IProductsEntity {
   @ManyToOne(() => CategoryEntity, (category) => category.parentCategory)
   @JoinColumn({ name: 'category_id' })
   category: CategoryEntity;
+
+  @OneToMany(() => OrderLineEntity, (orderLine) => orderLine.product)
+  orderLines: OrderLineEntity[];
+
+  @OneToMany(() => CartLineEntity, (cartLine) => cartLine.product)
+  cartLines: CartLineEntity[];
 
   constructor(product?: Partial<ProductEntity>) {
     super();

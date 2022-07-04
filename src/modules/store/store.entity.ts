@@ -3,6 +3,7 @@ import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ProductEntity } from '../product/product.entity';
 import { CartLineEntity } from '../cart/cart-line.entity';
+import { OrderEntity } from '../order/order.entity';
 
 export interface IStoreEntity extends IAbstractEntity {
   name?: string;
@@ -42,6 +43,9 @@ export class StoreEntity extends AbstractEntity implements IStoreEntity {
 
   @OneToMany(() => CartLineEntity, (cartLine) => cartLine.store)
   cartLines: CartLineEntity[];
+
+  @OneToMany(() => OrderEntity, (order) => order.store)
+  orders: OrderEntity[];
 
   constructor(store?: Partial<StoreEntity>) {
     super();

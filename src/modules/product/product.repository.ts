@@ -22,6 +22,7 @@ export class ProductsRepository extends Repository<ProductEntity> {
     const query = this.createQueryBuilder('p')
       .innerJoinAndSelect('p.storeOwner', 's')
       .leftJoinAndSelect('p.category', 'c')
+      .leftJoinAndSelect('p.variants', 'v')
       .skip(skip)
       .take(take)
       .orderBy(order);

@@ -19,4 +19,25 @@ export class GeneratorService {
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '');
   }
+
+  randStr(
+    length = 9,
+    noLowerCase: boolean,
+    noUpperCase: boolean,
+    noNumber: boolean,
+  ): string {
+    const lowers = 'abcdefghijklmnopqrstuvwxyz';
+    const uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    const chars = `${noLowerCase ? '' : lowers}${noUpperCase ? '' : uppers}${
+      noNumber ? '' : numbers
+    }`;
+    let str = '';
+
+    for (let i = 0; i < length; i++) {
+      str += chars[Math.floor(Math.random() * chars.length)];
+    }
+
+    return str;
+  }
 }
