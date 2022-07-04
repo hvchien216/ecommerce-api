@@ -7,8 +7,10 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { AttributeItemEntity } from '../attribute-item/attribute-item.entity';
+import { CartLineEntity } from '../cart/cart-line.entity';
 import { ProductEntity } from '../product/product.entity';
 
 export interface IProductVariantEntity extends IAbstractEntity {
@@ -59,6 +61,9 @@ export class ProductVariantEntity
     },
   })
   attributeItems: AttributeItemEntity[];
+
+  @OneToMany(() => CartLineEntity, (cartLine) => cartLine.product_variant)
+  cartLines: CartLineEntity[];
 
   constructor(productVariant?: Partial<ProductVariantEntity>) {
     super();

@@ -1,14 +1,8 @@
 import { AbstractEntity, IAbstractEntity } from '../../common/abstract.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ProductEntity } from '../product/product.entity';
+import { CartLineEntity } from '../cart/cart-line.entity';
 
 export interface IStoreEntity extends IAbstractEntity {
   name?: string;
@@ -45,6 +39,9 @@ export class StoreEntity extends AbstractEntity implements IStoreEntity {
     },
   )
   products: ProductEntity[];
+
+  @OneToMany(() => CartLineEntity, (cartLine) => cartLine.store)
+  cartLines: CartLineEntity[];
 
   constructor(store?: Partial<StoreEntity>) {
     super();
