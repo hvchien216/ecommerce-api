@@ -17,7 +17,8 @@ export interface IFile {
 @Injectable()
 export class AwsS3Service {
   private readonly s3: AWS.S3;
-
+  // private url: string =
+  //   'https://backend-ecommerce.s3.ap-southeast-1.amazonaws.com/';
   constructor(
     public configService: ApiConfigService,
     public generatorService: GeneratorService,
@@ -37,7 +38,7 @@ export class AwsS3Service {
       <string>mime.extension(file.mimetype),
     );
 
-    const key = 'images/' + fileName;
+    const key = 'file/' + fileName;
     const uploadResult = await this.s3
       .upload({
         Bucket: this.configService.awsS3Config.bucketName,
