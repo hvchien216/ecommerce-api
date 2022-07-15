@@ -12,6 +12,7 @@ import { ProfileEntity } from '../profile/profile.entity';
 import { StoreEntity } from '../store/store.entity';
 import { OrderEntity } from '../order/order.entity';
 import { CartLineEntity } from '../cart/cart-line.entity';
+import { AddressEntity } from '../address/address.entity';
 
 export interface IUserEntity extends IAbstractEntity {
   username?: string;
@@ -55,6 +56,11 @@ export class UserEntity extends AbstractEntity implements IUserEntity {
     cascade: true,
   })
   cart_details: CartLineEntity[];
+
+  @OneToMany(() => AddressEntity, (address) => address.user, {
+    cascade: true,
+  })
+  addresses: AddressEntity[];
 
   constructor(user?: Partial<UserEntity>) {
     super();

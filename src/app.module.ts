@@ -16,8 +16,8 @@ import { UploadModule } from './modules/upload/upload.module';
 import { AttributeModule } from './modules/attribute/attribute.module';
 import { AttributeItemModule } from './modules/attribute-item/attribute-item.module';
 import { OrderModule } from './modules/order/order.module';
-// import { PaymentModule } from './modules/payment/payment.module';
 import { CartModule } from './modules/cart/cart.module';
+import { AddressModule } from './modules/address/address.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,7 +41,7 @@ import { CartModule } from './modules/cart/cart.module';
     AttributeItemModule,
     OrderModule,
     CartModule,
-    // PaymentModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [AppService],
