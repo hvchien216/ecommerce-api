@@ -94,6 +94,7 @@ export class StoreService {
   }
 
   async create(
+    user: UserEntity,
     createStoreRequestDto: CreateStoreRequestDto,
   ): Promise<StoreResponseDto> {
     const store = await this.storeRepository.findOne({
@@ -110,7 +111,7 @@ export class StoreService {
       );
     }
 
-    let storeEntity = StoreMapper.toCreateEntity(createStoreRequestDto);
+    let storeEntity = StoreMapper.toCreateEntity(user, createStoreRequestDto);
     const { employeesId } = createStoreRequestDto;
     if (employeesId?.length > 0) {
       const users = await this.userRepository.findByIds(employeesId);

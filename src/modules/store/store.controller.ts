@@ -1,4 +1,5 @@
 import { RoleType } from '@/constants/role-type';
+import { AuthUser } from '@/decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '@/decorators/http.decorators';
 import { PaginationResponseDto } from '@/libs/pagitation';
 import { PaginationParams } from '@/libs/pagitation/decorators/pagination-params.decorator';
@@ -12,6 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UserEntity } from '../user/user.entity';
 import {
   CreateStoreRequestDto,
   LinkEmployeeToStoreRequestDto,
@@ -47,9 +49,10 @@ export class StoreController {
   @Post()
   @Auth([RoleType.USER, RoleType.ADMIN])
   async createStore(
+    @AuthUser() user: UserEntity,
     @Body(ValidationPipe) createStoreDto: CreateStoreRequestDto,
   ): Promise<StoreResponseDto> {
-    return this.storeService.create(createStoreDto);
+    return this.storeService.create(user, createStoreDto);
   }
 
   @ApiOperation({ description: 'Update Store' })

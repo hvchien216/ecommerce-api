@@ -23,6 +23,8 @@ export interface IUserEntity extends IAbstractEntity {
 
   name?: string;
 
+  profile_id: Uuid;
+
   isActive?: boolean;
 }
 
@@ -40,10 +42,15 @@ export class UserEntity extends AbstractEntity implements IUserEntity {
   @Column()
   name: string;
 
+  @Column()
+  profile_id: Uuid;
+
   @OneToOne(() => ProfileEntity, (profile) => profile.user, {
     cascade: ['insert'],
   })
-  @JoinColumn()
+  @JoinColumn({
+    name: 'profile_id',
+  })
   profile: ProfileEntity;
 
   @ManyToMany(() => StoreEntity, (store: StoreEntity) => store.employees)

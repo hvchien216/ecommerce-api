@@ -1,5 +1,13 @@
 import { AbstractEntity, IAbstractEntity } from '../../common/abstract.entity';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ProductEntity } from '../product/product.entity';
 import { CartLineEntity } from '../cart/cart-line.entity';
@@ -11,6 +19,8 @@ export interface IStoreEntity extends IAbstractEntity {
   bio?: string;
 
   slug: string;
+
+  owner_id: Uuid;
 }
 
 @Entity({ name: 'stores' })
@@ -25,6 +35,15 @@ export class StoreEntity extends AbstractEntity implements IStoreEntity {
     unique: true,
   })
   slug: string;
+
+  @Column()
+  owner_id: Uuid;
+
+  @OneToOne(() => UserEntity)
+  @JoinColumn({
+    name: 'owner_id',
+  })
+  owner: UserEntity;
 
   @ManyToMany(() => UserEntity, (user: UserEntity) => user.store, {
     cascade: true,

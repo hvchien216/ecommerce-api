@@ -17,7 +17,6 @@ const users = [
       phone: '0703239783',
       avatar: null,
       email: 'hvchien216@gmail.com',
-      address: '233/44 Ho Chi Minh City, VietNam',
     },
   },
 ];
@@ -35,7 +34,7 @@ export class InitialDatabaseSeed implements Seeder {
   async run(_: Factory, connection: Connection): Promise<any> {
     const userEntities = await Promise.all(
       users.map(async (u) => {
-        const user = UserMapper.toCreateEntity(u);
+        const user = UserMapper.toCreateEntity(u as any);
         return user;
       }),
     );
@@ -43,7 +42,10 @@ export class InitialDatabaseSeed implements Seeder {
 
     const storeEntities = await Promise.all(
       stores.map(async (s, idx) => {
-        const storeEntity = StoreMapper.toCreateEntity(s);
+        const storeEntity = StoreMapper.toCreateEntity(
+          savedUsers[idx],
+          s as any,
+        );
         storeEntity.employees = [savedUsers[idx]];
         return storeEntity;
       }),

@@ -1,3 +1,4 @@
+import { UserEntity } from '../user/user.entity';
 import { UserMapper } from '../user/user.mapper';
 import { CreateStoreRequestDto } from './dtos/create-store-request.dto';
 import { StoreResponseDto } from './dtos/store-response.dto';
@@ -19,11 +20,15 @@ export class StoreMapper {
     return dto;
   }
 
-  public static toCreateEntity(dto: CreateStoreRequestDto): StoreEntity {
+  public static toCreateEntity(
+    user: UserEntity,
+    dto: CreateStoreRequestDto,
+  ): StoreEntity {
     const entity = new StoreEntity();
     entity.name = dto.name;
     entity.bio = dto.bio;
     entity.slug = dto.slug;
+    entity.owner_id = user.id;
     return entity;
   }
 
