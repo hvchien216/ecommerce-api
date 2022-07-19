@@ -4,6 +4,8 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
 } from 'typeorm';
@@ -19,9 +21,13 @@ export interface IProductsEntity extends IAbstractEntity {
   title: string;
   description?: string;
   slug: string;
-  thumbnail?: string;
+  image?: string;
   images?: string;
+  price: number;
+  price_min: number;
+  price_max: number;
   code: string;
+  store_id: Uuid;
   status: ProductStatusType;
 }
 
@@ -39,7 +45,7 @@ export class ProductEntity extends AbstractEntity implements IProductsEntity {
   slug: string;
 
   @Column({ nullable: true })
-  thumbnail: string;
+  image: string;
 
   @Column({ nullable: true })
   images: string;
@@ -74,13 +80,31 @@ export class ProductEntity extends AbstractEntity implements IProductsEntity {
   })
   attributes: AttributeEntity[];
 
+  @Column()
+  store_id: Uuid;
+
   @ManyToOne(() => StoreEntity, (store) => store.products)
   @JoinColumn({ name: 'store_id' })
   storeOwner: StoreEntity;
 
-  @ManyToOne(() => CategoryEntity, (category) => category.parentCategory)
-  @JoinColumn({ name: 'category_id' })
-  category: CategoryEntity;
+  @ManyToMany(() => CategoryEntity, (category) => category.products, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'product_categories',
+    joinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'category_id',
+      referencedColumnName: 'id',
+    },
+  })
+  categories: CategoryEntity[];
+  // @ManyToOne(() => CategoryEntity, (category) => category.parentCategory)
+  // @JoinColumn({ name: 'category_id' })
+  // category: CategoryEntity;
 
   @OneToMany(() => OrderLineEntity, (orderLine) => orderLine.product)
   orderLines: OrderLineEntity[];

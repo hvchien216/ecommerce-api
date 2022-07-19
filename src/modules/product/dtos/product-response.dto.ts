@@ -19,7 +19,7 @@ export class ProductResponseDto extends AbstractDto {
   slug: string;
 
   @ApiPropertyOptional()
-  thumbnail?: string;
+  image?: string;
 
   @ApiPropertyOptional()
   images?: string;
@@ -40,7 +40,7 @@ export class ProductResponseDto extends AbstractDto {
   status: ProductStatusType;
 
   @ApiPropertyOptional()
-  category?: CategoryResponseDto;
+  categories?: CategoryResponseDto[];
 
   @ApiPropertyOptional()
   storeOwner?: StoreResponseDto;
@@ -56,7 +56,7 @@ export class ProductResponseDto extends AbstractDto {
     this.title = product.title;
     this.description = product.description;
     this.slug = product.slug;
-    this.thumbnail = product.thumbnail;
+    this.image = product.image;
     this.images = product.images;
     this.price = product.price;
     this.price_min = product.price_min;

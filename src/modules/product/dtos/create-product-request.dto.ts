@@ -1,7 +1,7 @@
 import { ProductStatusType } from '@/constants/product-status-type';
 import { CreateAttributeInProductRequestDto } from '@/modules/attribute/dtos/attribute-in-product-request.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 import { Trim } from '../../../decorators/transform.decorators';
 
@@ -25,7 +25,7 @@ export class CreateProductRequestDto {
 
   @ApiPropertyOptional()
   @Trim()
-  thumbnail?: string;
+  image?: string;
 
   @ApiPropertyOptional()
   @Trim()
@@ -38,7 +38,8 @@ export class CreateProductRequestDto {
   status: ProductStatusType;
 
   @ApiProperty()
-  categoryId: Uuid;
+  @IsArray()
+  categoryIds: Uuid[];
 
   @ApiProperty()
   storeId: Uuid;

@@ -1,21 +1,26 @@
-import { UUIDField } from '@/decorators/field.decorators';
+import { UUIDField, UUIDFieldOptional } from '@/decorators/field.decorators';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+  ArrayContains,
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 import { Trim } from '../../../decorators/transform.decorators';
 
 export class QueryProductsRequestDto {
   @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  @Trim()
+  // @Trim()
   q?: string;
 
-  @ApiPropertyOptional()
-  @UUIDField()
-  category_id?: Uuid;
+  @UUIDFieldOptional({ each: true, swagger: true })
+  category_ids?: Uuid[];
 
-  @ApiPropertyOptional()
-  @UUIDField()
+  @UUIDFieldOptional({ swagger: true })
   store_id?: Uuid;
 }

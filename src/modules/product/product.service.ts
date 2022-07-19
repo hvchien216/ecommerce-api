@@ -74,7 +74,7 @@ export class ProductService {
   async create(
     createProductDto: CreateProductRequestDto,
   ): Promise<ProductResponseDto> {
-    const { categoryId, storeId, attributes } = createProductDto;
+    const { categoryIds, storeId, attributes } = createProductDto;
 
     const storeEntity = await this.storeRepository.findOne(storeId);
 
@@ -85,9 +85,11 @@ export class ProductService {
       );
     }
 
-    const categoryEntity = await this.categoryRepository.findOne(categoryId);
+    const categoryEntities = await this.categoryRepository.findByIds(
+      categoryIds,
+    );
 
-    if (!categoryEntity) {
+    if (!categoryEntities) {
       throw new HttpException(
         { message: 'Category not found' },
         HttpStatus.BAD_REQUEST,
@@ -113,7 +115,7 @@ export class ProductService {
     });
 
     let productEntity = ProductMapper.toCreateEntity(createProductDto);
-    productEntity.category = categoryEntity;
+    productEntity.categories = categoryEntities;
     productEntity.storeOwner = storeEntity;
     productEntity.attributes = attributeEntities;
     productEntity.variants = productVariantEntities;
@@ -125,7 +127,7 @@ export class ProductService {
 
   async getProduct(productId: Uuid): Promise<ProductResponseDto> {
     const productEntity = await this.productRepository.findOne(productId, {
-      relations: ['variants', 'category', 'storeOwner'],
+      relations: ['variants', 'categories', 'storeOwner'],
     });
 
     if (!productEntity) {

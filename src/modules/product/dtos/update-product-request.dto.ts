@@ -1,6 +1,6 @@
 import { ProductStatusType } from '@/constants/product-status-type';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 import { Trim } from '../../../decorators/transform.decorators';
 
@@ -18,7 +18,7 @@ export class UpdateProductRequestDto {
 
   @ApiPropertyOptional()
   @Trim()
-  thumbnail?: string;
+  image?: string;
 
   @ApiPropertyOptional()
   @Trim()
@@ -28,5 +28,6 @@ export class UpdateProductRequestDto {
   status: ProductStatusType;
 
   @ApiProperty()
-  categoryId: Uuid;
+  @IsArray()
+  categoryIds: Uuid[];
 }

@@ -17,11 +17,12 @@ export class ProductsRepository extends Repository<ProductEntity> {
       skip,
       limit: take,
       order,
-      params: { q, category_id, store_id },
+      params: { q, category_ids, store_id },
     } = pagination;
+
     const query = this.createQueryBuilder('p')
       .innerJoinAndSelect('p.storeOwner', 's')
-      .leftJoinAndSelect('p.category', 'c')
+      .leftJoinAndSelect('p.categories', 'c')
       .leftJoinAndSelect('p.variants', 'v')
       .skip(skip)
       .take(take)
@@ -36,12 +37,19 @@ export class ProductsRepository extends Repository<ProductEntity> {
       );
     }
 
-    if (category_id) {
+    let categoryIdsTransform: Uuid[] | null = null;
+    if (!Array.isArray(category_ids)) {
+      categoryIdsTransform = [category_ids];
+    } else {
+      categoryIdsTransform = category_ids;
+    }
+
+    if (categoryIdsTransform?.length) {
       query.where(
         `
-          p.category = :category_id
+          c.id in (:...category_ids)
         `,
-        { category_id: `${category_id}` },
+        { category_ids: categoryIdsTransform },
       );
     }
 

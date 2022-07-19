@@ -10,6 +10,7 @@ import {
   Get,
   Post,
   Put,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -29,7 +30,10 @@ export class ProductController {
   @ApiOperation({ description: 'Get a paginated product no variant list' })
   @Get()
   async getProducts(
-    @PaginationParams() pagination: PaginationRequest<QueryProductsRequestDto>,
+    @PaginationParams()
+    pagination: PaginationRequest<QueryProductsRequestDto>,
+    // @Query(new ValidationPipe({ transform: true }))
+    // ids: QueryProductsRequestDto,
   ): Promise<PaginationResponseDto<ProductResponseDto>> {
     return this.productService.getList(pagination);
   }

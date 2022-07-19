@@ -5,6 +5,7 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
 } from 'typeorm';
@@ -42,12 +43,9 @@ export class CategoryEntity extends AbstractEntity implements ICategoryEntity {
   @OneToMany(() => CategoryEntity, (category) => category.parentCategory)
   childCategories: CategoryEntity[];
 
-  @OneToMany(
+  @ManyToMany(
     () => ProductEntity,
-    (product: ProductEntity) => product.category,
-    {
-      cascade: true,
-    },
+    (product: ProductEntity) => product.categories,
   )
   products: ProductEntity[];
 

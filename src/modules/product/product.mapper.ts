@@ -18,7 +18,9 @@ export class ProductMapper {
     entity: ProductEntity,
   ): Promise<ProductResponseDto> {
     const dto = new ProductResponseDto(entity);
-    dto.category = CategoryMapper.toDto(entity.category);
+    dto.categories = await Promise.all(
+      entity.categories.map((v) => CategoryMapper.toDto(v)),
+    );
     dto.storeOwner = StoreMapper.toDto(entity.storeOwner);
     dto.models = await Promise.all(
       entity.variants.map((v) => ProductVariantMapper.toDto(v)),
@@ -32,7 +34,7 @@ export class ProductMapper {
     entity.title = dto.title;
     entity.description = dto.description;
     entity.slug = dto.slug;
-    entity.thumbnail = dto.thumbnail;
+    entity.image = dto.image;
     entity.images = dto.images;
     entity.code = dto.code;
     entity.status = dto.status;
@@ -45,7 +47,7 @@ export class ProductMapper {
   ): ProductEntity {
     entity.title = dto.title;
     entity.description = dto.description;
-    entity.thumbnail = dto.thumbnail;
+    entity.image = dto.image;
     entity.images = dto.images;
     entity.status = dto.status;
     return entity;
