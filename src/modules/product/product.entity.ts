@@ -29,6 +29,7 @@ export interface IProductsEntity extends IAbstractEntity {
   code: string;
   store_id: Uuid;
   status: ProductStatusType;
+  is_complete: boolean;
 }
 
 @Entity({ name: 'products' })
@@ -64,6 +65,9 @@ export class ProductEntity extends AbstractEntity implements IProductsEntity {
 
   @Column({ nullable: true })
   code: string;
+
+  @Column({ default: false })
+  is_complete: boolean;
 
   @DeleteDateColumn()
   deletedAt: Date;

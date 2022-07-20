@@ -37,19 +37,12 @@ export class ProductsRepository extends Repository<ProductEntity> {
       );
     }
 
-    let categoryIdsTransform: Uuid[] | null = null;
-    if (!Array.isArray(category_ids)) {
-      categoryIdsTransform = [category_ids];
-    } else {
-      categoryIdsTransform = category_ids;
-    }
-
-    if (categoryIdsTransform?.length) {
+    if (category_ids?.length) {
       query.where(
         `
           c.id in (:...category_ids)
         `,
-        { category_ids: categoryIdsTransform },
+        { category_ids },
       );
     }
 

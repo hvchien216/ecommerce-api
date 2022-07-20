@@ -54,12 +54,11 @@ export class ProductService {
       const [productEntities, totalProducts] =
         await this.productRepository.getProductsAndCount(pagination);
 
-      const ProductDtos = await Promise.all(
+      const productDtos = await Promise.all(
         productEntities.map(ProductMapper.toDtoWithRelations),
       );
-      return Pagination.of(pagination, totalProducts, ProductDtos);
+      return Pagination.of(pagination, totalProducts, productDtos);
     } catch (error) {
-      console.log('error========', error);
       if (error instanceof NotFoundException) {
         throw new NotFoundException();
       }

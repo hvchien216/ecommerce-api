@@ -1,21 +1,10 @@
-import { UUIDField, UUIDFieldOptional } from '@/decorators/field.decorators';
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
 import {
-  ArrayContains,
-  IsArray,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
-
-import { Trim } from '../../../decorators/transform.decorators';
+  StringFieldOptional,
+  UUIDFieldOptional,
+} from '@/decorators/field.decorators';
 
 export class QueryProductsRequestDto {
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  // @Trim()
+  @StringFieldOptional({ swagger: true })
   q?: string;
 
   @UUIDFieldOptional({ each: true, swagger: true })

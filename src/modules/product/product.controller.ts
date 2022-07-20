@@ -32,9 +32,10 @@ export class ProductController {
   async getProducts(
     @PaginationParams()
     pagination: PaginationRequest<QueryProductsRequestDto>,
-    // @Query(new ValidationPipe({ transform: true }))
-    // ids: QueryProductsRequestDto,
+    @Query(new ValidationPipe({ transform: true }))
+    params: QueryProductsRequestDto,
   ): Promise<PaginationResponseDto<ProductResponseDto>> {
+    pagination['params'] = params;
     return this.productService.getList(pagination);
   }
 

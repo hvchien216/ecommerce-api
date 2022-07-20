@@ -38,6 +38,7 @@ export class ProductMapper {
     entity.images = dto.images;
     entity.code = dto.code;
     entity.status = dto.status;
+    entity.is_complete = false;
     return entity;
   }
 

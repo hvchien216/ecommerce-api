@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class updateManytomanyProductCategory1658141010987 implements MigrationInterface {
-    name = 'updateManytomanyProductCategory1658141010987'
+export class updateManytomanyProductCategory1658300387606 implements MigrationInterface {
+    name = 'updateManytomanyProductCategory1658300387606'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "products" DROP CONSTRAINT "FK_9a5f6868c96e0069e699f33e124"`);
@@ -11,6 +11,7 @@ export class updateManytomanyProductCategory1658141010987 implements MigrationIn
         await queryRunner.query(`ALTER TABLE "products" DROP COLUMN "category_id"`);
         await queryRunner.query(`ALTER TABLE "products" DROP COLUMN "thumbnail"`);
         await queryRunner.query(`ALTER TABLE "products" ADD "image" character varying`);
+        await queryRunner.query(`ALTER TABLE "products" ADD "is_complete" boolean NOT NULL DEFAULT false`);
         await queryRunner.query(`ALTER TABLE "products" DROP CONSTRAINT "FK_68863607048a1abd43772b314ef"`);
         await queryRunner.query(`ALTER TABLE "products" ALTER COLUMN "store_id" SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "products" ADD CONSTRAINT "FK_68863607048a1abd43772b314ef" FOREIGN KEY ("store_id") REFERENCES "stores"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -24,6 +25,7 @@ export class updateManytomanyProductCategory1658141010987 implements MigrationIn
         await queryRunner.query(`ALTER TABLE "products" DROP CONSTRAINT "FK_68863607048a1abd43772b314ef"`);
         await queryRunner.query(`ALTER TABLE "products" ALTER COLUMN "store_id" DROP NOT NULL`);
         await queryRunner.query(`ALTER TABLE "products" ADD CONSTRAINT "FK_68863607048a1abd43772b314ef" FOREIGN KEY ("store_id") REFERENCES "stores"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "products" DROP COLUMN "is_complete"`);
         await queryRunner.query(`ALTER TABLE "products" DROP COLUMN "image"`);
         await queryRunner.query(`ALTER TABLE "products" ADD "thumbnail" character varying`);
         await queryRunner.query(`ALTER TABLE "products" ADD "category_id" uuid`);
